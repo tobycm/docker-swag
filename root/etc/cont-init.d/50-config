@@ -35,18 +35,15 @@ done
 
 # make our folders and links
 mkdir -p \
-	/config/{log/letsencrypt,log/fail2ban,etc/letsencrypt,fail2ban,crontabs,dns-conf,geoip2db,renewal-hooks} \
+	/config/{log/letsencrypt,log/fail2ban,etc/letsencrypt,fail2ban,crontabs,dns-conf,geoip2db} \
 	/var/run/fail2ban
 rm -rf /etc/letsencrypt
 ln -s /config/etc/letsencrypt /etc/letsencrypt
 
-rm -rf /config/etc/letsencrypt/renewal-hooks
-ln -s ../../renewal-hooks /config/etc/letsencrypt/renewal-hooks
-
 # copy default renewal hooks
 chmod -R +x /defaults/renewal-hooks
-cp -nR /defaults/renewal-hooks/* /config/renewal-hooks/
-chown -R abc:abc /config/renewal-hooks
+cp -nR /defaults/renewal-hooks/* /config/etc/letsencrypt/renewal-hooks/
+chown -R abc:abc /config/etc/letsencrypt/renewal-hooks
 
 # copy dns default configs
 cp -n /defaults/dns-conf/* /config/dns-conf/
@@ -285,7 +282,6 @@ if [ ! "$URL" = "$ORIGURL" ] || [ ! "$SUBDOMAINS" = "$ORIGSUBDOMAINS" ] || [ ! "
   [[ -f /config/etc/letsencrypt/live/"$ORIGDOMAIN"/fullchain.pem ]] && certbot revoke --non-interactive --cert-path /config/etc/letsencrypt/live/"$ORIGDOMAIN"/fullchain.pem --server $REV_ACMESERVER
   rm -rf /config/etc/letsencrypt
   mkdir -p /config/etc/letsencrypt
-  ln -s ../../renewal-hooks /config/etc/letsencrypt/renewal-hooks
 fi
 
 # saving new variables

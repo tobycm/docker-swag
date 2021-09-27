@@ -1,7 +1,5 @@
 #!/usr/bin/with-contenv bash
 
-. /config/.donoteditthisfile.conf
-
 echo "<------------------------------------------------->"
 echo
 echo "<------------------------------------------------->"
