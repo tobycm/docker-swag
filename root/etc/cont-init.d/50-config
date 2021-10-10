@@ -241,7 +241,7 @@ if [ "$VALIDATION" = "dns" ]; then
     elif [[ "$DNSPLUGIN" =~ ^(google)$ ]]; then
         if [ -n "$PROPAGATION" ];then PROPAGATIONPARAM="--dns-${DNSPLUGIN}-propagation-seconds ${PROPAGATION}"; fi
         PREFCHAL="--dns-${DNSPLUGIN} --dns-${DNSPLUGIN}-credentials /config/dns-conf/${DNSPLUGIN}.json ${PROPAGATIONPARAM}"
-    elif [[ "$DNSPLUGIN" =~ ^(aliyun|domeneshop|hetzner|inwx|ionos|netcup|njalla|transip|vultr)$ ]]; then
+    elif [[ "$DNSPLUGIN" =~ ^(aliyun|domeneshop|he|hetzner|inwx|ionos|netcup|njalla|transip|vultr)$ ]]; then
         if [ -n "$PROPAGATION" ];then PROPAGATIONPARAM="--dns-${DNSPLUGIN}-propagation-seconds ${PROPAGATION}"; fi
         PREFCHAL="-a dns-${DNSPLUGIN} --dns-${DNSPLUGIN}-credentials /config/dns-conf/${DNSPLUGIN}.ini ${PROPAGATIONPARAM}"
     elif [[ "$DNSPLUGIN" =~ ^(directadmin)$ ]]; then
@@ -315,6 +315,14 @@ if [ "$DNSPLUGIN" = "google" ]; then
     FILENAME="$DNSPLUGIN.json"
 else
     FILENAME="$DNSPLUGIN.ini"
+fi
+
+# Check if the cert is using the old LE root cert, revoke and regen if necessary
+if [ -f "/config/keys/letsencrypt/chain.pem" ] && ([ "${CERTPROVIDER}" == "letsencrypt" ] || [ "${CERTPROVIDER}" == "" ]) && ! openssl x509 -in /config/keys/letsencrypt/chain.pem -noout -issuer | grep -q "ISRG Root X"; then
+    echo "The cert seems to be using the old LE root cert, which is no longer valid. Deleting and revoking."
+    certbot revoke --non-interactive --cert-path /config/etc/letsencrypt/live/"$ORIGDOMAIN"/fullchain.pem --server $REV_ACMESERVER
+    rm -rf /config/etc/letsencrypt
+    mkdir -p /config/etc/letsencrypt
 fi
 
 # generating certs if necessary

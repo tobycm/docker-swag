@@ -33,6 +33,7 @@ Find us at:
 [![GitHub Release](https://img.shields.io/github/release/linuxserver/docker-swag.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&logo=github)](https://github.com/linuxserver/docker-swag/releases)
 [![GitHub Package Repository](https://img.shields.io/static/v1.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=linuxserver.io&message=GitHub%20Package&logo=github)](https://github.com/linuxserver/docker-swag/packages)
 [![GitLab Container Registry](https://img.shields.io/static/v1.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=linuxserver.io&message=GitLab%20Registry&logo=gitlab)](https://gitlab.com/linuxserver.io/docker-swag/container_registry)
+[![Quay.io](https://img.shields.io/static/v1.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=linuxserver.io&message=Quay.io)](https://quay.io/repository/linuxserver.io/swag)
 [![Docker Pulls](https://img.shields.io/docker/pulls/linuxserver/swag.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=pulls&logo=docker)](https://hub.docker.com/r/linuxserver/swag)
 [![Docker Stars](https://img.shields.io/docker/stars/linuxserver/swag.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=stars&logo=docker)](https://hub.docker.com/r/linuxserver/swag)
 [![Jenkins Build](https://img.shields.io/jenkins/build?labelColor=555555&logoColor=ffffff&style=for-the-badge&jobUrl=https%3A%2F%2Fci.linuxserver.io%2Fjob%2FDocker-Pipeline-Builders%2Fjob%2Fdocker-swag%2Fjob%2Fmaster%2F&logo=jenkins)](https://ci.linuxserver.io/job/Docker-Pipeline-Builders/job/docker-swag/job/master/)
@@ -46,7 +47,7 @@ SWAG - Secure Web Application Gateway (formerly known as letsencrypt, no relatio
 
 Our images support multiple architectures such as `x86-64`, `arm64` and `armhf`. We utilise the docker manifest for multi-platform awareness. More information is available from docker [here](https://github.com/docker/distribution/blob/master/docs/spec/manifest-v2-2.md#manifest-list) and our announcement [here](https://blog.linuxserver.io/2019/02/21/the-lsio-pipeline-project/).
 
-Simply pulling `ghcr.io/linuxserver/swag` should retrieve the correct image for your arch, but you can also pull specific arch images via tags.
+Simply pulling `lscr.io/linuxserver/swag` should retrieve the correct image for your arch, but you can also pull specific arch images via tags.
 
 The architectures supported by this image are:
 
@@ -141,7 +142,7 @@ Here are some example snippets to help you get started creating a container.
 version: "2.1"
 services:
   swag:
-    image: ghcr.io/linuxserver/swag
+    image: lscr.io/linuxserver/swag
     container_name: swag
     cap_add:
       - NET_ADMIN
@@ -194,7 +195,7 @@ docker run -d \
   -p 80:80 `#optional` \
   -v /path/to/appdata/config:/config \
   --restart unless-stopped \
-  ghcr.io/linuxserver/swag
+  lscr.io/linuxserver/swag
 ```
 
 ## Parameters
@@ -212,7 +213,7 @@ Container images are configured using parameters passed at runtime (such as thos
 | `-e VALIDATION=http` | Certbot validation method to use, options are `http`, `dns` or `duckdns` (`dns` method also requires `DNSPLUGIN` variable set) (`duckdns` method requires `DUCKDNSTOKEN` variable set, and the `SUBDOMAINS` variable must be either empty or set to `wildcard`). |
 | `-e SUBDOMAINS=www,` | Subdomains you'd like the cert to cover (comma separated, no spaces) ie. `www,ftp,cloud`. For a wildcard cert, set this _exactly_ to `wildcard` (wildcard cert is available via `dns` and `duckdns` validation only) |
 | `-e CERTPROVIDER=` | Optionally define the cert provider. Set to `zerossl` for ZeroSSL certs (requires existing [ZeroSSL account](https://app.zerossl.com/signup) and the e-mail address entered in `EMAIL` env var). Otherwise defaults to Let's Encrypt. |
-| `-e DNSPLUGIN=cloudflare` | Required if `VALIDATION` is set to `dns`. Options are `aliyun`, `cloudflare`, `cloudxns`, `cpanel`, `digitalocean`, `directadmin`, `dnsimple`, `dnsmadeeasy`, `domeneshop`, `gandi`, `gehirn`, `google`, `hetzner`, `inwx`, `ionos`, `linode`, `luadns`, `netcup`, `njalla`, `nsone`, `ovh`, `rfc2136`, `route53`, `sakuracloud`, `transip` and `vultr`. Also need to enter the credentials into the corresponding ini (or json for some plugins) file under `/config/dns-conf`. |
+| `-e DNSPLUGIN=cloudflare` | Required if `VALIDATION` is set to `dns`. Options are `aliyun`, `cloudflare`, `cloudxns`, `cpanel`, `digitalocean`, `directadmin`, `dnsimple`, `dnsmadeeasy`, `domeneshop`, `gandi`, `gehirn`, `google`, `he`, `hetzner`, `inwx`, `ionos`, `linode`, `luadns`, `netcup`, `njalla`, `nsone`, `ovh`, `rfc2136`, `route53`, `sakuracloud`, `transip` and `vultr`. Also need to enter the credentials into the corresponding ini (or json for some plugins) file under `/config/dns-conf`. |
 | `-e PROPAGATION=` | Optionally override (in seconds) the default propagation time for the dns plugins. |
 | `-e DUCKDNSTOKEN=` | Required if `VALIDATION` is set to `duckdns`. Retrieve your token from https://www.duckdns.org |
 | `-e EMAIL=` | Optional e-mail address used for cert expiration notifications (Required for ZeroSSL). |
@@ -265,7 +266,7 @@ We publish various [Docker Mods](https://github.com/linuxserver/docker-mods) to 
 * container version number
   * `docker inspect -f '{{ index .Config.Labels "build_version" }}' swag`
 * image version number
-  * `docker inspect -f '{{ index .Config.Labels "build_version" }}' ghcr.io/linuxserver/swag`
+  * `docker inspect -f '{{ index .Config.Labels "build_version" }}' lscr.io/linuxserver/swag`
 
 ## Updating Info
 
@@ -283,7 +284,7 @@ Below are the instructions for updating containers:
 
 ### Via Docker Run
 
-* Update the image: `docker pull ghcr.io/linuxserver/swag`
+* Update the image: `docker pull lscr.io/linuxserver/swag`
 * Stop the running container: `docker stop swag`
 * Delete the container: `docker rm swag`
 * Recreate a new container with the same docker run parameters as instructed above (if mapped correctly to a host folder, your `/config` folder and settings will be preserved)
@@ -318,7 +319,7 @@ cd docker-swag
 docker build \
   --no-cache \
   --pull \
-  -t ghcr.io/linuxserver/swag:latest .
+  -t lscr.io/linuxserver/swag:latest .
 ```
 
 The ARM variants can be built on x86_64 hardware using `multiarch/qemu-user-static`
@@ -331,6 +332,8 @@ Once registered you can define the dockerfile to use with `-f Dockerfile.aarch64
 
 ## Versions
 
+* **06.10.21:** - Added support for Hurricane Electric (HE) DNS validation. Added lxml build deps.
+* **01.10.21:** - Check if the cert uses the old LE root cert, revoke and regenerate if necessary. [Here's more info](https://twitter.com/letsencrypt/status/1443621997288767491) on LE root cert expiration
 * **19.09.21:** - Add an optional header to opt out of Google FLoC in `ssl.conf`.
 * **17.09.21:** - Mark `SUBDOMAINS` var as optional.
 * **01.08.21:** - Add support for ionos dns validation.
