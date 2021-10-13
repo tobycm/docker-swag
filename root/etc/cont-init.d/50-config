@@ -35,15 +35,10 @@ done
 
 # make our folders and links
 mkdir -p \
-    /config/{log/letsencrypt,log/fail2ban,etc/letsencrypt,fail2ban,crontabs,dns-conf,geoip2db} \
+    /config/{log/letsencrypt,log/fail2ban,etc/letsencrypt/renewal-hooks,fail2ban,crontabs,dns-conf,geoip2db} \
     /var/run/fail2ban
 rm -rf /etc/letsencrypt
 ln -s /config/etc/letsencrypt /etc/letsencrypt
-
-# copy default renewal hooks
-chmod -R +x /defaults/renewal-hooks
-cp -nR /defaults/renewal-hooks/* /config/etc/letsencrypt/renewal-hooks/
-chown -R abc:abc /config/etc/letsencrypt/renewal-hooks
 
 # copy dns default configs
 cp -n /defaults/dns-conf/* /config/dns-conf/
@@ -303,8 +298,10 @@ if [ ! "$URL" = "$ORIGURL" ] || [ ! "$SUBDOMAINS" = "$ORIGSUBDOMAINS" ] || [ ! "
         REV_ACMESERVER="https://acme-v02.api.letsencrypt.org/directory"
     fi
     [[ -f /config/etc/letsencrypt/live/"$ORIGDOMAIN"/fullchain.pem ]] && certbot revoke --non-interactive --cert-path /config/etc/letsencrypt/live/"$ORIGDOMAIN"/fullchain.pem --server $REV_ACMESERVER
+    mv /config/etc/letsencrypt/renewal-hooks /tmp/
     rm -rf /config/etc/letsencrypt
     mkdir -p /config/etc/letsencrypt
+    mv /tmp/renewal-hooks /config/etc/letsencrypt/
 fi
 
 # saving new variables
@@ -321,9 +318,16 @@ fi
 if [ -f "/config/keys/letsencrypt/chain.pem" ] && ([ "${CERTPROVIDER}" == "letsencrypt" ] || [ "${CERTPROVIDER}" == "" ]) && ! openssl x509 -in /config/keys/letsencrypt/chain.pem -noout -issuer | grep -q "ISRG Root X"; then
     echo "The cert seems to be using the old LE root cert, which is no longer valid. Deleting and revoking."
     certbot revoke --non-interactive --cert-path /config/etc/letsencrypt/live/"$ORIGDOMAIN"/fullchain.pem --server $REV_ACMESERVER
+    mv /config/etc/letsencrypt/renewal-hooks /tmp/
     rm -rf /config/etc/letsencrypt
     mkdir -p /config/etc/letsencrypt
+    mv /tmp/renewal-hooks /config/etc/letsencrypt/
 fi
+
+# copy default renewal hooks (called later)
+chmod -R +x /defaults/renewal-hooks
+cp -R /defaults/renewal-hooks/* /config/etc/letsencrypt/renewal-hooks/
+chown -R abc:abc /config/etc/letsencrypt/renewal-hooks
 
 # generating certs if necessary
 if [ ! -f "/config/keys/letsencrypt/fullchain.pem" ]; then

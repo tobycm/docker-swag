@@ -1,5 +1,8 @@
 #!/usr/bin/with-contenv bash
 
+## THIS FILE IS REWRITTEN EVERY TIME THE CONTAINER STARTS
+## CUSTOMIZATIONS WILL BE LOST
+
 cd /config/keys/letsencrypt
 openssl pkcs12 -export -out privkey.pfx -inkey privkey.pem -in cert.pem -certfile chain.pem -passout pass:
 sleep 1

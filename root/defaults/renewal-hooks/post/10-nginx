@@ -1,5 +1,8 @@
 #!/usr/bin/with-contenv bash
 
+## THIS FILE IS REWRITTEN EVERY TIME THE CONTAINER STARTS
+## CUSTOMIZATIONS WILL BE LOST
+
 . /config/.donoteditthisfile.conf
 
 if [ "$ORIGVALIDATION" = "dns" ] || [ "$ORIGVALIDATION" = "duckdns" ]; then
