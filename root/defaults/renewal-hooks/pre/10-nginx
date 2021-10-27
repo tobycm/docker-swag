@@ -6,7 +6,7 @@
 . /config/.donoteditthisfile.conf
 
 if [ ! "$ORIGVALIDATION" = "dns" ] && [ ! "$ORIGVALIDATION" = "duckdns" ]; then
-	if ps aux | grep [n]ginx: > /dev/null; then
-		s6-svc -d /var/run/s6/services/nginx
-	fi
+    if ps aux | grep [n]ginx: > /dev/null; then
+        s6-svc -d /var/run/s6/services/nginx
+    fi
 fi
